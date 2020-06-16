@@ -31,7 +31,8 @@
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
         "symfony/yaml": "5.1.*",
-        "symfonycasts/verify-email-bundle": "^1.0"
+        "symfonycasts/verify-email-bundle": "^1.0",
+      "ext-intl": "*"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

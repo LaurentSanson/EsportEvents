@@ -5,7 +5,10 @@ security:
         users:
             entity:
                 class: 'App\Entity\Player'
-                property: 'pseudo'
+                property: 'email'
+    encoders:
+        App\Entity\Player:
+            algorithm: auto
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -14,6 +17,13 @@ security:
             anonymous: true
             lazy: true
             provider: users_in_memory
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+            logout:
+                path: logout
+                # where to redirect after logout
+                target: main
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

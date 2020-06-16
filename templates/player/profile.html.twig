@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Your account{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1> {{ player.nickname }}</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3">
+
+            </div>
+            <div class="col-3">
+                <img style="height: 200px; width: auto; " src="{{ asset('uploads/avatarPlayer/'~player.avatar) }}" alt="profile picture">
+            </div>
+
+            <div class="col-6">
+                <h3>Firstname : {{ player.firstname }}</h3>
+                <h3>Lastname : {{ player.lastname }}</h3>
+                <h3>Nickname : {{ player.nickname }}</h3>
+                <h3>Email : {{ player.email }}</h3>
+            </div>
+        </div>
+        <div>
+            <br>
+        </div>
+
+        <div class="row justify-content-center">
+
+            {% if app.user == player %}
+                <a class="btn btn-secondary" href="{{ path("updateProfile") }}"> Update </a>
+                <a class="btn btn-secondary" href="{{ path("deleteAccount", {id: player.id}) }}">Delete</a>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

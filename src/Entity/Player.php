@@ -38,6 +38,11 @@ class Player implements UserInterface
     private $nickname;
 
     /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $email;
@@ -121,6 +126,25 @@ class Player implements UserInterface
     public function setNickname(string $nickname): self
     {
         $this->nickname = $nickname;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
@@ -259,11 +283,6 @@ class Player implements UserInterface
         }
 
         return $this;
-    }
-
-    public function getRoles()
-    {
-        // TODO: Implement getRoles() method.
     }
 
     public function getSalt()

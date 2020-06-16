@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(updateForm) }}
+        {{ form_row(updateForm.firstname) }}
+        {{ form_row(updateForm.lastname) }}
+        {{ form_row(updateForm.nickname) }}
+        {{ form_row(updateForm.email) }}
+        {{ form_row(updateForm.password) }}
+        {{ form_row(updateForm.password2) }}
+        {{ form_row(updateForm.avatar) }}
+
+        <button type="submit" class="btn btn-secondary">Update your profile</button>
+        {{ form_end(updateForm) }}
+    </div>
+{% endblock %}
