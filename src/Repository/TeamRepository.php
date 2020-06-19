@@ -19,32 +19,13 @@ class TeamRepository extends ServiceEntityRepository
         parent::__construct($registry, Team::class);
     }
 
-    // /**
-    //  * @return Team[] Returns an array of Team objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findByName($name)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+            ->where('t.name = :name')
+            ->setParameter('name', $name)
             ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+            ->getOneOrNullResult();
 
-    /*
-    public function findOneBySomeField($value): ?Team
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
     }
-    */
 }

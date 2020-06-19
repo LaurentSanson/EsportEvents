@@ -88,13 +88,13 @@ class PlayerController extends AbstractController
             //recherche si pseudo identique dans la BD
             $testPlayer = $entityManager->getRepository(Player::class)->findOneBy(
                 ['nickname' => $testPseudo]
-            );;
+            );
 
             if ($testPlayer->getId() == $player->getId()) {
-                $testParticipant = null;
+                $testPlayer = null;
             }
 
-            if ($testParticipant != null) {
+            if ($testPlayer != null) {
                 $this->addFlash("alert-danger", "Nickname already used");
             } else {
                 if ($password == $password2) {

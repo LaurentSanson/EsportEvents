@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme teamForm 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block title %}Add your Team{% endblock %}
+
+{% block body %}
+
+    <h3>Add your Team</h3>
+    <div class="container">
+        {{ form_start(teamForm) }}
+        {{ form_widget(teamForm) }}
+        <button type="submit" class="btn btn-secondary">Create your Team</button>
+        {{ form_end(teamForm) }}
+    </div>
+
+{% endblock %}

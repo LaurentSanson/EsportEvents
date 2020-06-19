@@ -5,6 +5,8 @@
         "php": "^7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
+        "ext-mysqli": "*",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "5.1.*",
@@ -24,15 +26,15 @@
         "symfony/process": "5.1.*",
         "symfony/security-bundle": "5.1.*",
         "symfony/security-csrf": "5.1.*",
-        "symfony/serializer-pack": "*",
+        "symfony/serializer": "5.1.*",
+        "symfony/serializer-pack": "^1.0",
         "symfony/string": "5.1.*",
         "symfony/translation": "5.1.*",
         "symfony/twig-pack": "*",
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
         "symfony/yaml": "5.1.*",
-        "symfonycasts/verify-email-bundle": "^1.0",
-      "ext-intl": "*"
+        "symfonycasts/verify-email-bundle": "^1.0"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

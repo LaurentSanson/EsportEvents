@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ team.name }} - Detail{% endblock %}
+
+{% block body %}
+
+    <h1>Details</h1>
+    <div class="card text-center">
+        {{ team.logo }}
+        Your team : {{ team.name }}
+        Players : {% for player in players %}{{ player.nickname }}{% endfor %}
+    </div>
+    <div>
+        <form action="{{ path('searchPlayer') }}">
+            <label for="searchPlayer">Add a player</label>
+            <input type="text" id="searchPlayer" name="searchPlayer">
+            <div id="nicknames" style="display: none">
+                <select id="selectNicknames">
+
+                </select>
+            </div>
+            <button type="submit">Add</button>
+            <div style="display: none; color: red" id="errorMessage"></div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+
+{% endblock %}
+
+
+

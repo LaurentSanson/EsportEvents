@@ -5,4 +5,8 @@
 {% block body %}
     <p>TODO : liste des post de recrutement</p>
     <p>liste des teams</p>
+    {% for team in teams %}
+    <p><a href="{{ path('teamDetail', {'id': team.id}) }}">{{ team.name }}</a></p>
+    {% endfor %}
+    <button><a href="{{ path('addTeam') }}">Create your Team</a></button>
 {% endblock %}
