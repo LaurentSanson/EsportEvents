@@ -1,7 +1,7 @@
-const input = document.getElementById('searchPlayer');
+const input = document.getElementById('add_player_to_team_nickname');
 const div = document.getElementById('nicknames');
 const selectNicknames = document.getElementById('selectNicknames');
-let searchPlayer = document.getElementById('searchPlayer').value;
+let searchPlayer = document.getElementById('add_player_to_team_nickname').value;
 
 input.addEventListener("keyup", listAllPlayers);
 
@@ -15,7 +15,7 @@ function listAllPlayers() {
             $(errorMessage).text('').hide();
             $(div).show();
             $.each(results, function (key, value) {
-                $(selectNicknames).append('<option value="' + value.nickname + '">' + value.nickname + '</option>');
+                $(selectNicknames).append('<option value="' + value.nickname + '" name="selectedPlayer" id="searchPlayer">' + value.nickname + '</option>');
             })
         } else {
             if ($(searchPlayer).val()) {
@@ -29,22 +29,3 @@ function listAllPlayers() {
         $(input).find('option').remove();
     });
 }
-
-// function listAllPlayers() {
-//     const APIURL = document.location.href;
-//     $.ajax({
-//         type: "GET",
-//         url: APIURL,
-//         data: {searchPlayer: searchPlayer + $(this).val()},
-//
-//     })
-//         .done(function (item) {
-//             let select = document.createElement("select");
-//             let option = document.createElement("option");
-//             let text = document.createTextNode(item.searchPlayer);
-//             span.innerText += item.searchPlayer;
-//             // input.appendChild(select);
-//             // select.appendChild(option);
-//             // option.appendChild(text)
-//         });
-// };

@@ -29,6 +29,7 @@
         "symfony/serializer": "5.1.*",
         "symfony/serializer-pack": "^1.0",
         "symfony/string": "5.1.*",
+        "symfony/swiftmailer-bundle": "^3.4",
         "symfony/translation": "5.1.*",
         "symfony/twig-pack": "*",
         "symfony/validator": "5.1.*",
@@ -37,6 +38,7 @@
         "symfonycasts/verify-email-bundle": "^1.0"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.19",
         "symfony/profiler-pack": "*",

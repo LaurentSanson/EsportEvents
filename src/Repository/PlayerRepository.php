@@ -38,15 +38,15 @@ class PlayerRepository extends ServiceEntityRepository
     }
 
 
-    /*
-    public function findOneBySomeField($value): ?Player
+
+    public function findOneByResetToken($token): ?Player
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('p.resetToken = :resetToken')
+            ->setParameter('resetToken', $token)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
 }

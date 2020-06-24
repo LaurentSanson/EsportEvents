@@ -1,0 +1,9 @@
+swiftmailer:
+    url: '%env(MAILER_URL)%'
+    spool: { type: 'memory' }
+    disable_delivery: false
+    stream_options:
+        verify_peer: false
+        verfify_peer_name: false
+        allow_self_signed : true
+    port : 1025

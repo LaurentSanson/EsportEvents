@@ -11,17 +11,15 @@
         Players : {% for player in players %}{{ player.nickname }}{% endfor %}
     </div>
     <div>
-        <form action="{{ path('searchPlayer') }}">
-            <label for="searchPlayer">Add a player</label>
-            <input type="text" id="searchPlayer" name="searchPlayer">
-            <div id="nicknames" style="display: none">
-                <select id="selectNicknames">
-
-                </select>
-            </div>
-            <button type="submit">Add</button>
-            <div style="display: none; color: red" id="errorMessage"></div>
-        </form>
+        {{ form_start(addPlayerToTeamForm) }}
+        {{ form_row(addPlayerToTeamForm.nickname,{'full_name': 'add_player_to_team_nickname'}) }}
+        <div id="nicknames" style="display: none">
+            <select id="selectNicknames" name="selectNicknames">
+            </select>
+        </div>
+        <button type="submit" class="btn btn-secondary">Add</button>
+        <div style="display: none; color: red" id="errorMessage"></div>
+        {{ form_end(addPlayerToTeamForm) }}
     </div>
 
 {% endblock %}

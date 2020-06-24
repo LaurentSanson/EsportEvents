@@ -1,0 +1,10 @@
+# See https://symfony.com/doc/current/email/dev_environment.html
+swiftmailer:
+  disable_delivery: false
+  stream_options:
+      verify_peer: false
+      verfify_peer_name: false
+      allow_self_signed: true
+  port: 1025
+    # send all emails to a specific address
+    #delivery_addresses: ['me@example.com']

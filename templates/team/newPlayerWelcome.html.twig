@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to your new Team{% endblock %}
+
+{% block body %}
+
+    <p>{{ user.nickname }}, welcome to the {{ team.name }}</p>
+
+    <button><a href="{{ path('teamDetail', {'id': team.id}) }}">Checkout your teammates</a></button>
+{% endblock %}

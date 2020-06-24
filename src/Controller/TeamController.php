@@ -4,20 +4,28 @@ namespace App\Controller;
 
 use App\Entity\Player;
 use App\Entity\Team;
+use App\Form\AddPlayerToTeamType;
 use App\Form\TeamType;
+use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+
 
 class TeamController extends AbstractController
 {
+    private $emailVerifier;
+
+    public function __construct(EmailVerifier $emailVerifier)
+    {
+        $this->emailVerifier = $emailVerifier;
+    }
+
     /**
      * @Route("/team", name="team")
      */
@@ -34,7 +42,7 @@ class TeamController extends AbstractController
      */
     public function addTeam(EntityManagerInterface $em, Request $request)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You cannot access to this page if you're not connected");
             return $this->redirectToRoute('main');
         }
@@ -46,7 +54,7 @@ class TeamController extends AbstractController
         $teamForm = $this->createForm(TeamType::class, $team);
         $teamForm->handleRequest($request);
 
-        if ($teamForm->isSubmitted() && $teamForm->isValid()){
+        if ($teamForm->isSubmitted() && $teamForm->isValid()) {
 //            $teamName = $team->getName();
 //            $testTeam = $em->getRepository(Team::class)->findByName($teamName);
 //            if ($testTeam->getId() == $team->getId()){
@@ -56,10 +64,10 @@ class TeamController extends AbstractController
 //                $this->addFlash("alert-danger", "This Team name is already used");
 //            } else {
             $team->addPlayer($player);
-                $em->persist($team);
-                $em->flush();
-                $this->addFlash("success", "Welcome to your Team !");
-                return $this->redirectToRoute('teamDetail', array('id'=>$team->getId()));
+            $em->persist($team);
+            $em->flush();
+            $this->addFlash("success", "Welcome to your Team !");
+            return $this->redirectToRoute('teamDetail', array('id' => $team->getId()));
 //            }
 
         }
@@ -72,9 +80,9 @@ class TeamController extends AbstractController
     /**
      * @Route("/teamDetail/{id}", name="teamDetail")
      */
-    public function teamDetail(EntityManagerInterface $em, $id, Request $request)
+    public function teamDetail(EntityManagerInterface $em, $id, Request $request, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You cannot access to this page if you're not connected");
             return $this->redirectToRoute('main');
         }
@@ -82,24 +90,89 @@ class TeamController extends AbstractController
         $team = $em->getRepository(Team::class)->find($id);
         $players = $team->getPlayers();
 
+        $addPlayerToTeamForm = $this->createForm(AddPlayerToTeamType::class);
+        $addPlayerToTeamForm->handleRequest($request);
+
+        if ($addPlayerToTeamForm->isSubmitted() && $addPlayerToTeamForm->isValid()) {
+            $selectedPlayer = $request->get('selectNicknames');
+            $playerAddedToTeam = $em->getRepository(Player::class)->findOneBy(['nickname' => $selectedPlayer]);
+
+            $token = $tokenGenerator->generateToken();
+            try {
+                $playerAddedToTeam->setResetToken($token);
+                $em->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('warning', $e->getMessage());
+                return $this->redirectToRoute('teamDetail', array('id' => $team->getId()));
+            }
+            $url = $this->generateUrl('playerConfirmJoinTeam', array('token' => $token, 'id' => $id), UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $message = (new \Swift_Message('A Team wants to recruit you !'))
+                ->setFrom('teamRecruitment@esportevents.com')
+                ->setTo($playerAddedToTeam->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'emails/teamRecruitment.html.twig',
+                        ['playerAddedToTeam' => $playerAddedToTeam,
+                            'team' => $team,
+                            'url' => $url]
+                    ),
+                    'text/html'
+                );
+
+            $mailer->send($message);
+            $this->addFlash("success", "The player has been asked to join your Team");
+            return $this->redirectToRoute('teamDetail', array('id' => $team->getId()));
+
+        }
+
         return $this->render("team/teamDetail.html.twig",
             [
                 "team" => $team,
                 'players' => $players,
+                'addPlayerToTeamForm' => $addPlayerToTeamForm->createView()
 
             ]
         );
     }
 
     /**
-     * @Route("/searchPlayer", name="searchPlayer", methods="GET")
+     * @Route("/playerConfirmJoinTeam/{token}/{id}", name="playerConfirmJoinTeam")
+     */
+    public function playerConfirmJoinTeam(EntityManagerInterface $em, string $token, $id)
+    {
+        $team = $em->getRepository(Team::class)->find($id);
+        $user = $em->getRepository(Player::class)->findOneByResetToken($token);
+
+        if ($user === null) {
+            $this->addFlash('danger', 'Token Inconnu');
+            return $this->redirectToRoute('main');
+        }
+
+        $user->setResetToken(null);
+        $user->setTeam($team);
+        $em->persist($user);
+        $em->flush();
+
+        return $this->render('team/newPlayerWelcome.html.twig', [
+            'user' => $user,
+            'team' => $team,
+            'id' => $id
+        ]);
+
+
+    }
+
+    /**
+     * @Route("/searchPlayer", name="searchPlayer")
      */
     public function searchPlayer(EntityManagerInterface $em, Request $request)
     {
-        $search = $request->get('searchPlayer');
+        $search = $request->get('add_player_to_team_nickname');
         $searchPlayer = $em->getRepository(Player::class)->searchPlayer($search);
-        return $this->json($searchPlayer, 200, [], ['groups'=>'group1']);
+        return $this->json($searchPlayer, 200, [], ['groups' => 'group1']);
     }
+
 
     /**
      *
@@ -107,7 +180,7 @@ class TeamController extends AbstractController
      */
     public function deleteTeam(EntityManagerInterface $em, $id)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You cannot access to this page if you're not connected");
             return $this->redirectToRoute('main');
         }
