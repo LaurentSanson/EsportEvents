@@ -23,17 +23,14 @@ class PlayerController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function index(EntityManagerInterface $entityManager, Request $request, $id = null)
+    public function index(EntityManagerInterface $entityManager, $id = null)
     {
         if (!$this->getUser()){
             $this->addFlash('danger', "You cannot access to this page if you are not connected");
             return $this->redirectToRoute('main');
         }
-        if ($id == null) {
-            $player = $this->getUser();
-        } else {
-            $player = $entityManager->getRepository(Player::class)->find($id);
-        }
+        $player = $entityManager->getRepository(Player::class)->find($id);
+
         return $this->render('player/profile.html.twig', [
             'player' => $player,
         ]);
@@ -52,7 +49,6 @@ class PlayerController extends AbstractController
             $this->addFlash('danger', "You cannot access to this page if you are not connected");
             return $this->redirectToRoute('main');
         }
-        // Si le user n'est pas connecté, il n'a pas accès à la page modifier
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $player = $this->getUser();
@@ -109,7 +105,7 @@ class PlayerController extends AbstractController
 
                     $this->addFlash("success", "Profile updated !");
 
-                    return $this->redirectToRoute('profile');
+                    return $this->redirectToRoute('profile', ['id' => $player->getId()]);
                 } else {
                     $this->addFlash("alert-danger", "Passwords are not the same !");
                 }

@@ -6,9 +6,10 @@ let searchPlayer = document.getElementById('add_player_to_team_nickname').value;
 input.addEventListener("keyup", listAllPlayers);
 
 function listAllPlayers() {
-    const APIURL = "/searchPlayer/" + "?searchPlayer=";
+    const APIURL = "/searchPlayer/" + "?search=";
     let errorMessage = $('#errorMessage');
     let url = APIURL + $(this).val();
+
     fetch(url, {method: 'get'}).then(response => response.json()).then(results => {
         $(input).find('option').remove();
         if (results.length) {

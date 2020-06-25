@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update your Team{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(teamForm) }}
+        {{ form_row(teamForm.name) }}
+        {{ form_row(teamForm.logo) }}
+        <button type="submit" class="btn btn-secondary">Update your Team</button>
+        {{ form_end(teamForm) }}
+        <a class="btn btn-secondary" href="{{ path('teamDetail', {'id': team.id}) }}">Cancel</a>
+    </div>
+{% endblock %}
+
+

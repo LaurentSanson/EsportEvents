@@ -4,23 +4,51 @@
 
 {% block body %}
 
-    <h1>Details</h1>
+
     <div class="card text-center">
-        {{ team.logo }}
-        Your team : {{ team.name }}
-        Players : {% for player in players %}{{ player.nickname }}{% endfor %}
+        <h1>{{ team.name }}</h1>
+        <img style="height: 200px; width: 200px;" src="{{ asset('uploads/logoTeam/'~team.logo) }}">
     </div>
-    <div>
-        {{ form_start(addPlayerToTeamForm) }}
-        {{ form_row(addPlayerToTeamForm.nickname,{'full_name': 'add_player_to_team_nickname'}) }}
-        <div id="nicknames" style="display: none">
-            <select id="selectNicknames" name="selectNicknames">
-            </select>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Players</th>
+            {% if (app.user == player) and (is_granted('ROLE_TEAM_ADMIN')) %}
+                <th>Remove</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for player in players %}
+            <tr>
+                <th><a href="{{ path('profile', {'id': player.id}) }}">{{ player.nickname }}</a></th>
+                {% if (app.user != player) and (is_granted('ROLE_TEAM_ADMIN')) %}
+                    <th>
+                        <a href="#" onclick="if (confirm('Are you sure to remove this player from your Team ?')) {$.ajax('{{ path('removePlayerFromTeam', {'id':player.id}) }}').done(function(){location.reload()})}; ">Remove
+                            Logo</a></th>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {% if (app.user == player) and (is_granted('ROLE_TEAM_ADMIN')) %}
+        <div>
+            {{ form_start(addPlayerToTeamForm) }}
+            {{ form_row(addPlayerToTeamForm.nickname,{'full_name': 'search'}) }}
+            <div id="nicknames" style="display: none">
+                <select id="selectNicknames" name="selectNicknames">
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Add</button>
+            <div style="display: none; color: red" id="errorMessage"></div>
+            {{ form_end(addPlayerToTeamForm) }}
         </div>
-        <button type="submit" class="btn btn-secondary">Add</button>
-        <div style="display: none; color: red" id="errorMessage"></div>
-        {{ form_end(addPlayerToTeamForm) }}
-    </div>
+        <a class="btn btn-secondary" href="{{ path('updateTeam', {'id': team.id}) }}">Update My Team</a>
+        <a class="btn btn-secondary" href="{{ path('deleteTeam', {'id': team.id}) }}">Delete My Team</a>
+    {% endif %}
 
 {% endblock %}
 

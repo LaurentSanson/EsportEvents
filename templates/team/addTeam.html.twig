@@ -9,7 +9,8 @@
     <h3>Add your Team</h3>
     <div class="container">
         {{ form_start(teamForm) }}
-        {{ form_widget(teamForm) }}
+        {{ form_row(teamForm.name,{'full_name': 'name'}) }}
+        {{ form_row(teamForm.logo) }}
         <button type="submit" class="btn btn-secondary">Create your Team</button>
         {{ form_end(teamForm) }}
     </div>

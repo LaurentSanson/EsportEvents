@@ -22,19 +22,15 @@ class PlayerRepository extends ServiceEntityRepository
     /**
      * @return Player[] Returns an array of Player objects
      */
-    public function searchPlayer($search)
+    public function searchPlayer(?string $search)
     {
         $qb = $this->createQueryBuilder('p');
-        $qb->andWhere('p.nickname LIKE :search')
-            ->setParameter('search', "%" . $search . "%")
-            ->orderBy('p.nickname', 'ASC')
-            ->setMaxResults(5);
+        $qb->andWhere("p.nickname LIKE :search")
+            ->setParameter('search', '%'.$search.'%' );
+//            ->setMaxResults(5);
 
-        $query = $qb->getQuery();
-
-        return $query->getResult();
-
-
+        return $qb->getQuery()
+            ->getResult();
     }
 
 
