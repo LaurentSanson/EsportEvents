@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme postForm 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block title %}Create your Post{% endblock %}
+
+{% block body %}
+
+    <h3>Add a Post</h3>
+    <div class="container">
+        {{ form_start(postForm) }}
+        {{ form_row(postForm.subject) }}
+        {{ form_row(postForm.content) }}
+        <button type="submit" class="btn btn-secondary">Create your Post</button>
+        {{ form_end(postForm) }}
+    </div>
+
+{% endblock %}

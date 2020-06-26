@@ -3,10 +3,27 @@
 {% block title %}Team Recruitment{% endblock %}
 
 {% block body %}
-    <p>TODO : liste des post de recrutement</p>
-    <p>liste des teams</p>
-    {% for team in teams %}
-    <p><a href="{{ path('teamDetail', {'id': team.id}) }}">{{ team.name }}</a></p>
-    {% endfor %}
-    <button><a href="{{ path('addTeam') }}">Create your Team</a></button>
+    <div>
+        <a class="btn btn-secondary" href="{{ path('addPost') }}">Create a Post</a>
+        <p>Liste des posts</p>
+        {% for post in posts %}
+            <div class="list-group">
+                <a href="{{ path('postDetail', {'id': post.id}) }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ post.subject }}</h5>
+                        <span class="badge badge-primary badge-pill">{{ post.comments.count }}</span>
+                    </div>
+                    <p class="mb-1">{{ post.content }}</p>
+                    <small>{{ post.player.nickname }}</small>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        <a class="btn btn-secondary" href="{{ path('addTeam') }}">Create your Team</a>
+        <p>Liste des teams</p>
+        {% for team in teams %}
+            <p><a href="{{ path('teamDetail', {'id': team.id}) }}">{{ team.name }}</a></p>
+        {% endfor %}
+    </div>
 {% endblock %}

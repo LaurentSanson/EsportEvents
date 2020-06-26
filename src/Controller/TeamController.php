@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Entity\Post;
 use App\Entity\Team;
 use App\Form\AddPlayerToTeamType;
 use App\Form\PlayerType;
@@ -36,8 +37,10 @@ class TeamController extends AbstractController
     public function index(EntityManagerInterface $em, Request $request)
     {
         $teams = $em->getRepository(Team::class)->findAll();
+        $posts = $em->getRepository(Post::class)->findAll();
         return $this->render('team/index.html.twig', [
-            'teams' => $teams
+            'teams' => $teams,
+            'posts' => $posts
         ]);
     }
 

@@ -25,8 +25,8 @@
                 <th><a href="{{ path('profile', {'id': player.id}) }}">{{ player.nickname }}</a></th>
                 {% if (app.user != player) and (is_granted('ROLE_TEAM_ADMIN')) %}
                     <th>
-                        <a href="#" onclick="if (confirm('Are you sure to remove this player from your Team ?')) {$.ajax('{{ path('removePlayerFromTeam', {'id':player.id}) }}').done(function(){location.reload()})}; ">Remove
-                            Logo</a></th>
+                        <a href="#" onclick="if (confirm('Are you sure to remove this player from your Team ?')) {$.ajax('{{ path('removePlayerFromTeam', {'id':player.id}) }}').done(function(){location.reload()})}; ">
+                            <img style="height: 30px; width: auto; " src="{{ asset('img/remove.png') }}"></a></th>
                 {% endif %}
             </tr>
         {% endfor %}

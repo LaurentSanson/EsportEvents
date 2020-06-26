@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme commentForm 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block title %}{{ post.subject }} - Detail{% endblock %}
+
+{% block body %}
+    <div class="card text-center">
+        <div class="card-header">
+            {{ post.player.nickname }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ post.subject }}</h5>
+            <p class="card-text">{{ post.content }}</p>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseComments"
+                aria-expanded="false" aria-controls="collapseExample">
+            Get all the comments
+        </button>
+        {% for comment in comments %}
+            <div class="collapse" id="collapseComments">
+                <div class="card card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>{{ comment.message }}</p>
+                        <footer class="blockquote-footer">{{ comment.player.nickname }}</footer>
+                    </blockquote>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.message) }}
+        <button type="submit" class="btn btn-secondary">Add</button>
+        {{ form_end(commentForm) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+
+{% endblock %}
+
+
+
