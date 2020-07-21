@@ -25,7 +25,8 @@
                 <th><a href="{{ path('profile', {'id': player.id}) }}">{{ player.nickname }}</a></th>
                 {% if (app.user != player) and (is_granted('ROLE_TEAM_ADMIN')) %}
                     <th>
-                        <a href="#" onclick="if (confirm('Are you sure to remove this player from your Team ?')) {$.ajax('{{ path('removePlayerFromTeam', {'id':player.id}) }}').done(function(){location.reload()})}; ">
+                        <a href="#"
+                           onclick="if (confirm('Are you sure to remove this player from your Team ?')) {$.ajax('{{ path('removePlayerFromTeam', {'id':player.id}) }}').done(function(){location.reload()})}; ">
                             <img style="height: 30px; width: auto; " src="{{ asset('img/remove.png') }}"></a></th>
                 {% endif %}
             </tr>
@@ -35,17 +36,15 @@
 
 
     {% if (app.user == player) and (is_granted('ROLE_TEAM_ADMIN')) %}
-        <div>
+        <form autocomplete="off">
             {{ form_start(addPlayerToTeamForm) }}
-            {{ form_row(addPlayerToTeamForm.nickname,{'full_name': 'search'}) }}
-            <div id="nicknames" style="display: none">
-                <select id="selectNicknames" name="selectNicknames">
-                </select>
+            <div class="autocomplete">
+                {{ form_row(addPlayerToTeamForm.nickname,{'full_name': 'search', 'id':'myInput'}) }}
             </div>
             <button type="submit" class="btn btn-secondary">Add</button>
             <div style="display: none; color: red" id="errorMessage"></div>
             {{ form_end(addPlayerToTeamForm) }}
-        </div>
+        </form>
         <a class="btn btn-secondary" href="{{ path('updateTeam', {'id': team.id}) }}">Update My Team</a>
         <a class="btn btn-secondary" href="{{ path('deleteTeam', {'id': team.id}) }}">Delete My Team</a>
     {% endif %}
@@ -53,8 +52,10 @@
 {% endblock %}
 
 {% block javascripts %}
-
-
+    <script>
+        const input = document.getElementById('myInput');
+        input.addEventListener("input", listAllPlayers);
+    </script>
 {% endblock %}
 
 
