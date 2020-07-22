@@ -15,12 +15,11 @@ class MainController extends AbstractController
      */
     public function index(EntityManagerInterface $em, Request $request)
     {
-        $allPlayers = $em->getRepository(Player::class)->findAll();
-        $search = $request->get('homeSearchPlayer');
+        $search = $request->get('homeSearch');
         $searchPlayer = $em->getRepository(Player::class)->searchPlayer($search);
         return $this->render('main/index.html.twig', [
-            'searchPlayer' => $searchPlayer,
-            'allPlayers' => $allPlayers,
+            'searchPlayer' => $searchPlayer
+
         ]);
     }
 }

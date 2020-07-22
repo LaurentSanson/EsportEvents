@@ -4,13 +4,20 @@
 
 {% block body %}
 
+{#    {% for player in searchPlayer %}#}
+{#        <div>#}
+{#        <p>{{ player.nickname }}</p>#}
+{#        </div>#}
+{#    {% endfor %}#}
+
     <div>
         <h1>Upcoming Tournaments</h1>
         <div class="card" style="width: 18rem;">
             <img src="" class="card-img-top" alt="image">
             <div class="card-body">
                 <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
                 <a href="#" class="btn btn-primary">Go somewhere</a>
             </div>
         </div>
@@ -21,14 +28,10 @@
             <img src="" class="card-img-top" alt="image">
             <div class="card-body">
                 <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
                 <a href="#" class="btn btn-primary">Go somewhere</a>
             </div>
         </div>
     </div>
-{#    <div>#}
-{#        {% for player in searchPlayer %}#}
-{#            <p>{{ player.nickname }}</p>#}
-{#        {% endfor %}#}
-{#    </div>#}
 {% endblock %}

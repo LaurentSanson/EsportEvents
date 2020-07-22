@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% form_theme addScrimForm 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block title %}Add your Scrim{% endblock %}
+
+{% block body %}
+
+    <h3>Add your Scrim</h3>
+    <div class="container">
+        <form autocomplete="off">
+            {{ form_start(addScrimForm) }}
+            {{ form_row(addScrimForm.name) }}
+            {{ form_row(addScrimForm.logo) }}
+            {{ form_row(addScrimForm.scrimDate) }}
+            {{ form_row(addScrimForm.scrimlimitRegistrationDate) }}
+            <div class="autocomplete">
+                {{ form_row(addScrimForm.game, {'full_name': 'search', 'id':'myInput'}) }}
+            </div>
+            {{ form_row(addScrimForm.platform) }}
+            <button type="submit" class="btn btn-secondary">Create your Scrim</button>
+            {{ form_end(addScrimForm) }}
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        const input = document.getElementById('myInput');
+        input.addEventListener("input", searchGame);
+    </script>
+{% endblock %}
+

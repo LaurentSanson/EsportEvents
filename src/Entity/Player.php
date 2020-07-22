@@ -65,11 +65,6 @@ class Player implements UserInterface
     private $team;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Event::class, inversedBy="players")
-     */
-    private $events;
-
-    /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="player")
      */
     private $posts;
@@ -89,6 +84,8 @@ class Player implements UserInterface
         $this->events = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->tournaments = new ArrayCollection();
+        $this->scrims = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -200,32 +197,6 @@ class Player implements UserInterface
     }
 
     /**
-     * @return Collection|Event[]
-     */
-    public function getEvents(): Collection
-    {
-        return $this->events;
-    }
-
-    public function addEvent(Event $event): self
-    {
-        if (!$this->events->contains($event)) {
-            $this->events[] = $event;
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): self
-    {
-        if ($this->events->contains($event)) {
-            $this->events->removeElement($event);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Post[]
      */
     public function getPosts(): Collection
@@ -321,6 +292,16 @@ class Player implements UserInterface
     protected $resetToken;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Tournament::class, mappedBy="players")
+     */
+    private $tournaments;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Scrim::class, mappedBy="players")
+     */
+    private $scrims;
+
+    /**
      * @return string
      */
     public function getResetToken(): string
@@ -334,5 +315,61 @@ class Player implements UserInterface
     public function setResetToken(?string $resetToken): void
     {
         $this->resetToken = $resetToken;
+    }
+
+    /**
+     * @return Collection|Tournament[]
+     */
+    public function getTournaments(): Collection
+    {
+        return $this->tournaments;
+    }
+
+    public function addTournament(Tournament $tournament): self
+    {
+        if (!$this->tournaments->contains($tournament)) {
+            $this->tournaments[] = $tournament;
+            $tournament->addPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTournament(Tournament $tournament): self
+    {
+        if ($this->tournaments->contains($tournament)) {
+            $this->tournaments->removeElement($tournament);
+            $tournament->removePlayer($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Scrim[]
+     */
+    public function getScrims(): Collection
+    {
+        return $this->scrims;
+    }
+
+    public function addScrim(Scrim $scrim): self
+    {
+        if (!$this->scrims->contains($scrim)) {
+            $this->scrims[] = $scrim;
+            $scrim->addPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScrim(Scrim $scrim): self
+    {
+        if ($this->scrims->contains($scrim)) {
+            $this->scrims->removeElement($scrim);
+            $scrim->removePlayer($this);
+        }
+
+        return $this;
     }
 }

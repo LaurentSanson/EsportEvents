@@ -25,19 +25,25 @@ class Platform
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="platform")
-     */
-    private $events;
-
-    /**
      * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="platforms")
      */
     private $games;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Scrim::class, mappedBy="platform")
+     */
+    private $scrims;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Tournament::class, mappedBy="platform")
+     */
+    private $tournaments;
+
     public function __construct()
     {
-        $this->events = new ArrayCollection();
         $this->games = new ArrayCollection();
+        $this->scrims = new ArrayCollection();
+        $this->tournaments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -53,34 +59,6 @@ class Platform
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Event[]
-     */
-    public function getEvents(): Collection
-    {
-        return $this->events;
-    }
-
-    public function addEvent(Event $event): self
-    {
-        if (!$this->events->contains($event)) {
-            $this->events[] = $event;
-            $event->addPlatform($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): self
-    {
-        if ($this->events->contains($event)) {
-            $this->events->removeElement($event);
-            $event->removePlatform($this);
-        }
 
         return $this;
     }
@@ -108,6 +86,68 @@ class Platform
         if ($this->games->contains($game)) {
             $this->games->removeElement($game);
             $game->removePlatform($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Scrim[]
+     */
+    public function getScrims(): Collection
+    {
+        return $this->scrims;
+    }
+
+    public function addScrim(Scrim $scrim): self
+    {
+        if (!$this->scrims->contains($scrim)) {
+            $this->scrims[] = $scrim;
+            $scrim->setPlatform($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScrim(Scrim $scrim): self
+    {
+        if ($this->scrims->contains($scrim)) {
+            $this->scrims->removeElement($scrim);
+            // set the owning side to null (unless already changed)
+            if ($scrim->getPlatform() === $this) {
+                $scrim->setPlatform(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tournament[]
+     */
+    public function getTournaments(): Collection
+    {
+        return $this->tournaments;
+    }
+
+    public function addTournament(Tournament $tournament): self
+    {
+        if (!$this->tournaments->contains($tournament)) {
+            $this->tournaments[] = $tournament;
+            $tournament->setPlatform($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTournament(Tournament $tournament): self
+    {
+        if ($this->tournaments->contains($tournament)) {
+            $this->tournaments->removeElement($tournament);
+            // set the owning side to null (unless already changed)
+            if ($tournament->getPlatform() === $this) {
+                $tournament->setPlatform(null);
+            }
         }
 
         return $this;
