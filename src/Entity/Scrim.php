@@ -45,7 +45,7 @@ class Scrim
     private $players;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="scrims")
+     * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="scrims", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $game;
@@ -56,9 +56,20 @@ class Scrim
      */
     private $platform;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Team::class, mappedBy="scrims")
+     */
+    private $teams;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nbMaxTeams;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,4 +174,45 @@ class Scrim
 
         return $this;
     }
+
+    /**
+     * @return Collection|Team[]
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): self
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams[] = $team;
+            $team->addScrim($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): self
+    {
+        if ($this->teams->contains($team)) {
+            $this->teams->removeElement($team);
+            $team->removeScrim($this);
+        }
+
+        return $this;
+    }
+
+    public function getNbMaxTeams(): ?int
+    {
+        return $this->nbMaxTeams;
+    }
+
+    public function setNbMaxTeams(int $nbMaxTeams): self
+    {
+        $this->nbMaxTeams = $nbMaxTeams;
+
+        return $this;
+    }
+
 }

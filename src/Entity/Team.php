@@ -34,9 +34,21 @@ class Team
      */
     private $players;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Tournament::class, inversedBy="teams")
+     */
+    private $tournaments;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Scrim::class, inversedBy="teams")
+     */
+    private $scrims;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->tournaments = new ArrayCollection();
+        $this->scrims = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,6 +106,58 @@ class Team
             if ($player->getTeam() === $this) {
                 $player->setTeam(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tournament[]
+     */
+    public function getTournaments(): Collection
+    {
+        return $this->tournaments;
+    }
+
+    public function addTournament(Tournament $tournament): self
+    {
+        if (!$this->tournaments->contains($tournament)) {
+            $this->tournaments[] = $tournament;
+        }
+
+        return $this;
+    }
+
+    public function removeTournament(Tournament $tournament): self
+    {
+        if ($this->tournaments->contains($tournament)) {
+            $this->tournaments->removeElement($tournament);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Scrim[]
+     */
+    public function getScrims(): Collection
+    {
+        return $this->scrims;
+    }
+
+    public function addScrim(Scrim $scrim): self
+    {
+        if (!$this->scrims->contains($scrim)) {
+            $this->scrims[] = $scrim;
+        }
+
+        return $this;
+    }
+
+    public function removeScrim(Scrim $scrim): self
+    {
+        if ($this->scrims->contains($scrim)) {
+            $this->scrims->removeElement($scrim);
         }
 
         return $this;

@@ -11,8 +11,8 @@
             <img src="..." class="card-img-top" alt="scrimLogo">
             <div class="card-body">
                 <h5 class="card-title">{{ upcomingScrim.name }}</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+                <p class="card-text">Limit Registration Date : {{ upcomingScrim.scrimlimitRegistrationDate | date('d-m-Y') }}</p>
+                <p class="card-text">Scrim Date : {{ upcomingScrim.scrimDate | date('d-m-Y') }}</p>
                 <a href="{{ path('scrimDetail', {'id': upcomingScrim.id}) }}" class="btn btn-primary">Details</a>
             </div>
         </div>

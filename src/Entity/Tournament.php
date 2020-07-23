@@ -67,9 +67,15 @@ class Tournament
      */
     private $platform;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Team::class, mappedBy="tournaments")
+     */
+    private $teams;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +201,34 @@ class Tournament
     public function setPlatform(?Platform $platform): self
     {
         $this->platform = $platform;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Team[]
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): self
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams[] = $team;
+            $team->addTournament($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): self
+    {
+        if ($this->teams->contains($team)) {
+            $this->teams->removeElement($team);
+            $team->removeTournament($this);
+        }
 
         return $this;
     }

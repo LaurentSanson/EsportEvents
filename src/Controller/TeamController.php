@@ -71,20 +71,15 @@ class TeamController extends AbstractController
                 $photo = $teamForm->get('logo')->getData();
                 if ($photo) {
                     $originalFilename = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
-                    // On inclut le nom du fichier à l'URL
                     $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
                     $newFilename = $safeFilename . '-' . uniqid() . '.' . $photo->guessExtension();
-
-                    // On enregistre le fichier dans le dossier demandé
                     try {
                         $photo->move(
                             $this->getParameter('logoTeam_directory'),
                             $newFilename
                         );
                     } catch (FileException $e) {
-
-                    }
-
+                        }
                     $team->setLogo($newFilename);
                 }
                 $team->setName($teamName);

@@ -4,11 +4,10 @@ namespace App\Form;
 
 use App\Entity\Platform;
 use App\Entity\Scrim;
+use App\Form\DataTransformer\GameToStringTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,6 +16,13 @@ use Symfony\Component\Validator\Constraints\File;
 
 class ScrimType extends AbstractType
 {
+    private $transformer;
+
+    public function __construct(GameToStringTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -38,9 +44,15 @@ class ScrimType extends AbstractType
                 'widget' => 'single_text'])
             ->add('platform', EntityType::class, [
                 'class' => Platform::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'choice_value' => function (?Platform $entity) {
+                    return $entity ? $entity->getName() : '';
+                },
             ])
             ->add('game', SearchType::class);
+
+        $builder->get('game')
+            ->addModelTransformer($this->transformer);
 
     }
 
