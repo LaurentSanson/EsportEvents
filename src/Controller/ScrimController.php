@@ -64,7 +64,7 @@ class ScrimController extends AbstractController
             $today = new \DateTime('now');
             if ($scrim->getScrimDate() < $today) {
                 $this->addFlash('danger', 'Your Scrim can\'t be before today');
-            } elseif ($scrim->getScrimlimitRegistrationDate() > $scrim->getScrimDate() && $scrim->getScrimlimitRegistrationDate() < $today) {
+            } elseif ($scrim->getScrimlimitRegistrationDate() > $scrim->getScrimDate() or $scrim->getScrimlimitRegistrationDate() < $today) {
                 $this->addFlash('danger', 'Your Scrim limit registration date can\'t be after the scrim date');
             } else {
                 $scrim->setNbMaxTeams(2);
@@ -117,13 +117,17 @@ class ScrimController extends AbstractController
         $scrim = $entityManager->getRepository(Scrim::class)->find($id);
         $teams = $scrim->getTeams()->toArray();
         $numberOfTeamsRegistered = $scrim->getTeams()->count();
+        $today = new \DateTime('now');
         if ($numberOfTeamsRegistered == $scrim->getNbMaxTeams()) {
             $this->addFlash('danger', "There are already two teams registered for this Scrim");
             return $this->redirectToRoute('scrimDetail', ['id' => $id]);
         } elseif (in_array($team, $teams)) {
             $this->addFlash('danger', "You are already registered for this Scrim");
             return $this->redirectToRoute('scrimDetail', ['id' => $id]);
-        } else {
+        } elseif($scrim->getScrimlimitRegistrationDate() > $today ) {
+            $this->addFlash('danger', "The registrations are closed");
+            return $this->redirectToRoute('scrimDetail', ['id' => $id]);
+        } else{
             $scrim->addTeam($team);
             $entityManager->flush();
         }

@@ -9,7 +9,7 @@
         <img style="height: 200px; width: 200px;" src="{{ asset('uploads/logoScim/'~scrim.logo) }}" alt="logoScrim">
         <p class="card-text">Limit Registration Date : {{ scrim.scrimlimitRegistrationDate | date('d-m-Y H:m') }}</p>
         <p class="card-text">Scrim Date : {{ scrim.scrimDate | date('d-m-Y H:m') }}</p>
-        {% if is_granted('ROLE_TEAM_ADMIN') and (scrim.teams.count < scrim.nbMaxTeams) and ()%}
+        {% if is_granted('ROLE_TEAM_ADMIN') and (scrim.teams.count < scrim.nbMaxTeams)%}
             <a class="btn btn-secondary btn-sm" href="{{ path('scrimRegister', {'id':scrim.id}) }}">Register</a>
         {% endif %}
     </div>
