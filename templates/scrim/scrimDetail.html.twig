@@ -9,8 +9,27 @@
         <img style="height: 200px; width: 200px;" src="{{ asset('uploads/logoScim/'~scrim.logo) }}" alt="logoScrim">
         <p class="card-text">Limit Registration Date : {{ scrim.scrimlimitRegistrationDate | date('d-m-Y H:m') }}</p>
         <p class="card-text">Scrim Date : {{ scrim.scrimDate | date('d-m-Y H:m') }}</p>
-        {% if is_granted('ROLE_TEAM_ADMIN') and (scrim.teams.count < scrim.nbMaxTeams)%}
-            <a class="btn btn-secondary btn-sm" href="{{ path('scrimRegister', {'id':scrim.id}) }}">Register</a>
+        {% if teams.count > 0 %}
+            {% for team in teams %}
+                {% if is_granted('ROLE_TEAM_ADMIN') and team.name == app.user.team.name %}
+                    <a class="btn btn-secondary btn-sm"
+                       href="{{ path('scrimUnregister', {'id':scrim.id}) }}">Unregister</a>
+                {% else %}
+                    {% if is_granted('ROLE_TEAM_ADMIN') and (team.name != app.user.team.name) and (teams.count < scrim.nbMaxTeams) %}
+                        <a class="btn btn-secondary btn-sm"
+                           href="{{ path('scrimRegister', {'id':scrim.id}) }}">Register</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% if is_granted('ROLE_TEAM_ADMIN') and teams.count < scrim.nbMaxTeams %}
+                <a class="btn btn-secondary btn-sm"
+                   href="{{ path('scrimRegister', {'id':scrim.id}) }}">Register</a>
+            {% endif %}
+        {% endif %}
+        {% if scrim.organizer == app.user %}
+            <a class="btn btn-secondary btn-sm" href="{{ path('scrimUpdate', {'id':scrim.id}) }}">Update Scrim</a>
+            <a class="btn btn-secondary btn-sm" href="{{ path('scrimDelete', {'id':scrim.id}) }}">Delete Scrim</a>
         {% endif %}
     </div>
 

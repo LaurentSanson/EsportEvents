@@ -66,6 +66,12 @@ class Scrim
      */
     private $nbMaxTeams;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Player::class, inversedBy="scrimsOrganizer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $organizer;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
@@ -211,6 +217,18 @@ class Scrim
     public function setNbMaxTeams(int $nbMaxTeams): self
     {
         $this->nbMaxTeams = $nbMaxTeams;
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?Player
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?Player $organizer): self
+    {
+        $this->organizer = $organizer;
 
         return $this;
     }

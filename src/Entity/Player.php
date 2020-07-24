@@ -86,6 +86,8 @@ class Player implements UserInterface
         $this->comments = new ArrayCollection();
         $this->tournaments = new ArrayCollection();
         $this->scrims = new ArrayCollection();
+        $this->scrimsOrganizer = new ArrayCollection();
+        $this->tournamentsOrganizer = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -302,6 +304,16 @@ class Player implements UserInterface
     private $scrims;
 
     /**
+     * @ORM\OneToMany(targetEntity=Scrim::class, mappedBy="organizer")
+     */
+    private $scrimsOrganizer;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Tournament::class, mappedBy="organizer")
+     */
+    private $tournamentsOrganizer;
+
+    /**
      * @return string
      */
     public function getResetToken(): string
@@ -368,6 +380,68 @@ class Player implements UserInterface
         if ($this->scrims->contains($scrim)) {
             $this->scrims->removeElement($scrim);
             $scrim->removePlayer($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Scrim[]
+     */
+    public function getScrimsOrganizer(): Collection
+    {
+        return $this->scrimsOrganizer;
+    }
+
+    public function addScrimsOrganizer(Scrim $scrimsOrganizer): self
+    {
+        if (!$this->scrimsOrganizer->contains($scrimsOrganizer)) {
+            $this->scrimsOrganizer[] = $scrimsOrganizer;
+            $scrimsOrganizer->setOrganizer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScrimsOrganizer(Scrim $scrimsOrganizer): self
+    {
+        if ($this->scrimsOrganizer->contains($scrimsOrganizer)) {
+            $this->scrimsOrganizer->removeElement($scrimsOrganizer);
+            // set the owning side to null (unless already changed)
+            if ($scrimsOrganizer->getOrganizer() === $this) {
+                $scrimsOrganizer->setOrganizer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tournament[]
+     */
+    public function getTournamentsOrganizer(): Collection
+    {
+        return $this->tournamentsOrganizer;
+    }
+
+    public function addTournamentsOrganizer(Tournament $tournamentsOrganizer): self
+    {
+        if (!$this->tournamentsOrganizer->contains($tournamentsOrganizer)) {
+            $this->tournamentsOrganizer[] = $tournamentsOrganizer;
+            $tournamentsOrganizer->setOrganizer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTournamentsOrganizer(Tournament $tournamentsOrganizer): self
+    {
+        if ($this->tournamentsOrganizer->contains($tournamentsOrganizer)) {
+            $this->tournamentsOrganizer->removeElement($tournamentsOrganizer);
+            // set the owning side to null (unless already changed)
+            if ($tournamentsOrganizer->getOrganizer() === $this) {
+                $tournamentsOrganizer->setOrganizer(null);
+            }
         }
 
         return $this;

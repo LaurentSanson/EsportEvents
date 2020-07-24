@@ -72,6 +72,12 @@ class Tournament
      */
     private $teams;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Player::class, inversedBy="tournamentsOrganizer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $organizer;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
@@ -229,6 +235,18 @@ class Tournament
             $this->teams->removeElement($team);
             $team->removeTournament($this);
         }
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?Player
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?Player $organizer): self
+    {
+        $this->organizer = $organizer;
 
         return $this;
     }
