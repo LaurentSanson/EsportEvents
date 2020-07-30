@@ -25,10 +25,10 @@ class Tournament
     private $maxRegistration;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TournamentType::class, inversedBy="tournaments")
+     * @ORM\ManyToOne(targetEntity=TournamentStyle::class, inversedBy="tournaments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $tournamentType;
+    private $tournamentStyle;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -78,10 +78,32 @@ class Tournament
      */
     private $organizer;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $rules;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=MatchStyle::class, inversedBy="tournaments")
+     */
+    private $matchStyle;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Stage::class, mappedBy="tournament", orphanRemoval=true)
+     */
+    private $stages;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
         $this->teams = new ArrayCollection();
+        $this->matchStyle = new ArrayCollection();
+        $this->stages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,14 +123,14 @@ class Tournament
         return $this;
     }
 
-    public function getTournamentType(): ?TournamentType
+    public function getTournamentStyle(): ?TournamentStyle
     {
-        return $this->tournamentType;
+        return $this->tournamentStyle;
     }
 
-    public function setTournamentType(?TournamentType $tournamentType): self
+    public function setTournamentStyle(?TournamentStyle $tournamentStyle): self
     {
-        $this->tournamentType = $tournamentType;
+        $this->tournamentStyle = $tournamentStyle;
 
         return $this;
     }
@@ -247,6 +269,87 @@ class Tournament
     public function setOrganizer(?Player $organizer): self
     {
         $this->organizer = $organizer;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getRules(): ?string
+    {
+        return $this->rules;
+    }
+
+    public function setRules(?string $rules): self
+    {
+        $this->rules = $rules;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|MatchStyle[]
+     */
+    public function getMatchStyle(): Collection
+    {
+        return $this->matchStyle;
+    }
+
+    public function addMatchStyle(MatchStyle $matchStyle): self
+    {
+        if (!$this->matchStyle->contains($matchStyle)) {
+            $this->matchStyle[] = $matchStyle;
+        }
+
+        return $this;
+    }
+
+    public function removeMatchStyle(MatchStyle $matchStyle): self
+    {
+        if ($this->matchStyle->contains($matchStyle)) {
+            $this->matchStyle->removeElement($matchStyle);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Stage[]
+     */
+    public function getStages(): Collection
+    {
+        return $this->stages;
+    }
+
+    public function addStage(Stage $stage): self
+    {
+        if (!$this->stages->contains($stage)) {
+            $this->stages[] = $stage;
+            $stage->setTournament($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStage(Stage $stage): self
+    {
+        if ($this->stages->contains($stage)) {
+            $this->stages->removeElement($stage);
+            // set the owning side to null (unless already changed)
+            if ($stage->getTournament() === $this) {
+                $stage->setTournament(null);
+            }
+        }
 
         return $this;
     }

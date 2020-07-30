@@ -36,6 +36,7 @@ class ScrimType extends AbstractType
                     ])
                 ]
             ])
+            ->add('description')
             ->add('scrimDate', DateTimeType::class, [
                 'label' => 'Date of your Scrim',
                 'widget' => 'single_text'])

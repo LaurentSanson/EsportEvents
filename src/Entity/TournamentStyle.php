@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\TournamentTypeRepository;
+use App\Repository\TournamentStyleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TournamentTypeRepository::class)
+ * @ORM\Entity(repositoryClass=TournamentStyleRepository::class)
  */
-class TournamentType
+class TournamentStyle
 {
     /**
      * @ORM\Id()
@@ -25,13 +25,19 @@ class TournamentType
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Tournament::class, mappedBy="tournamentType")
+     * @ORM\OneToMany(targetEntity=Tournament::class, mappedBy="tournamentStyle")
      */
     private $tournaments;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Stage::class, mappedBy="tournamentStyle")
+     */
+    private $stages;
 
     public function __construct()
     {
         $this->tournaments = new ArrayCollection();
+        $this->stages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,7 +69,7 @@ class TournamentType
     {
         if (!$this->tournaments->contains($tournament)) {
             $this->tournaments[] = $tournament;
-            $tournament->setTournamentType($this);
+            $tournament->setTournamentStyle($this);
         }
 
         return $this;
@@ -74,8 +80,39 @@ class TournamentType
         if ($this->tournaments->contains($tournament)) {
             $this->tournaments->removeElement($tournament);
             // set the owning side to null (unless already changed)
-            if ($tournament->getTournamentType() === $this) {
-                $tournament->setTournamentType(null);
+            if ($tournament->getTournamentStyle() === $this) {
+                $tournament->setTournamentStyle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Stage[]
+     */
+    public function getStages(): Collection
+    {
+        return $this->stages;
+    }
+
+    public function addStage(Stage $stage): self
+    {
+        if (!$this->stages->contains($stage)) {
+            $this->stages[] = $stage;
+            $stage->setTournamentStyle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStage(Stage $stage): self
+    {
+        if ($this->stages->contains($stage)) {
+            $this->stages->removeElement($stage);
+            // set the owning side to null (unless already changed)
+            if ($stage->getTournamentStyle() === $this) {
+                $stage->setTournamentStyle(null);
             }
         }
 

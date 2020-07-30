@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\TournamentType;
+use App\Entity\TournamentStyle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method TournamentType|null find($id, $lockMode = null, $lockVersion = null)
- * @method TournamentType|null findOneBy(array $criteria, array $orderBy = null)
- * @method TournamentType[]    findAll()
- * @method TournamentType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TournamentStyle|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TournamentStyle|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TournamentStyle[]    findAll()
+ * @method TournamentStyle[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TournamentTypeRepository extends ServiceEntityRepository
+class TournamentStyleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TournamentType::class);
+        parent::__construct($registry, TournamentStyle::class);
     }
 
     // /**
-    //  * @return TournamentType[] Returns an array of TournamentType objects
+    //  * @return TournamentStyle[] Returns an array of TournamentStyle objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class TournamentTypeRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TournamentType
+    public function findOneBySomeField($value): ?TournamentStyle
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

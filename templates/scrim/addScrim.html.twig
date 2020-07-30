@@ -1,27 +1,26 @@
 {% extends 'base.html.twig' %}
 {% form_theme addScrimForm 'bootstrap_4_horizontal_layout.html.twig' %}
 
-{% block title %}Add your Scrim{% endblock %}
+{% block head %}
+    {% block title %}Add your Scrim{% endblock %}
+{% endblock %}
 
 {% block body %}
 
     <h3>Add your Scrim</h3>
     <div class="container">
-
-
-            {{ form_start(addScrimForm, {'attr': {'autocomplete': 'off'}}) }}
-            {{ form_row(addScrimForm.name) }}
-            {{ form_row(addScrimForm.logo) }}
-            {{ form_row(addScrimForm.scrimDate) }}
-            {{ form_row(addScrimForm.scrimlimitRegistrationDate) }}
-            <div class="autocomplete">
-                {{ form_row(addScrimForm.game, {'id':'myInput'}) }}
-            </div>
-            {{ form_row(addScrimForm.platform) }}
-            <button type="submit" class="btn btn-secondary">Create your Scrim</button>
-            {{ form_end(addScrimForm) }}
-
-
+        {{ form_start(addScrimForm, {'attr': {'autocomplete': 'off'}}) }}
+        {{ form_row(addScrimForm.name) }}
+        {{ form_row(addScrimForm.logo) }}
+        {{ form_row(addScrimForm.scrimDate) }}
+        {{ form_row(addScrimForm.scrimlimitRegistrationDate) }}
+        <div class="autocomplete">
+            {{ form_row(addScrimForm.game, {'id':'myInput'}) }}
+        </div>
+        {{ form_row(addScrimForm.platform) }}
+        {{ form_row(addScrimForm.description, {'id':'myTextarea', 'full_name': 'myTextarea'}) }}
+        <button type="submit" class="btn btn-secondary">Create your Scrim</button>
+        {{ form_end(addScrimForm) }}
     </div>
 
 {% endblock %}
@@ -30,6 +29,20 @@
     <script type="text/javascript">
         const input = document.getElementById('myInput')
         input.addEventListener("input", searchGame)
+    </script>
+    <script>
+        tinymce.init({
+            selector: '#myTextarea',
+            plugins: [
+                "a11ychecker advcode advlist anchor autolink codesample fullscreen help image imagetools tinydrive",
+                " lists link media noneditable powerpaste preview",
+                " searchreplace table template tinymcespellchecker visualblocks"
+            ],
+            toolbar: "insertfile a11ycheck undo redo | bold italic | forecolor backcolor | template codesample | alignleft aligncenter alignright alignjustify | bullist numlist | link image tinydrive",
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            branding: false
+        });
     </script>
 {% endblock %}
 

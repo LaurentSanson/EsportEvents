@@ -153,15 +153,20 @@ class ScrimController extends AbstractController
         $scrim = $em->getRepository(Scrim::class)->find($id);
         $userTeam = $user->getTeam();
         $userTeamPlayers = $scrim->getPlayers();
-        foreach ($userTeamPlayers as $player){
-            $scrim->removePlayer($player);
+        $today = new \DateTime('now');
+        if ($scrim->getScrimlimitRegistrationDate() < $today){
+            $this->addFlash('danger', "You cannot be unregistered from this Scrim as the registration/unregistration are closed.");
+            return $this->redirectToRoute('scrimDetail', ['id' => $id]);
+        } else{
+            foreach ($userTeamPlayers as $player){
+                $scrim->removePlayer($player);
+            }
+            $scrim->removeTeam($userTeam);
+            $em->flush();
+            $this->addFlash("success", "You've been successfully unregistered");
+
+            return $this->redirectToRoute('scrimDetail', ['id' => $id]);
         }
-        $scrim->removeTeam($userTeam);
-        $em->flush();
-        $this->addFlash("success", "You've been successfully unregistered");
-
-        return $this->redirectToRoute('scrimDetail', ['id' => $id]);
-
     }
 
     /**
@@ -218,5 +223,35 @@ class ScrimController extends AbstractController
                 "upcomingScrims" => $scrims
             ]
         );
+    }
+
+    /**
+     *
+     * @Route("/scrim/results/{id}", name="scrimResults")
+     * @param EntityManagerInterface $em
+     * @param $id
+     * @return Response
+     */
+    public function scrimResults(EntityManagerInterface $em, Request $request, $id)
+    {
+        if (!$this->getUser()){
+            $this->addFlash('danger', "You can't access to this page if you're not connected !");
+            return $this->redirectToRoute('main');
+        }
+        $scrim = $em->getRepository(Scrim::class)->find($id);
+        $form = $this->createForm(ScrimType::class, $scrim);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash("success", "You're scrim results have been added");
+            return $this->redirectToRoute('scrimDetail', ['id' => $id]);
+        }
+
+        return $this->render('scrim/scrimResults.html.twig', [
+            'scrimResultsForm' => $form->createView(),
+            'scrim' => $scrim,
+
+        ]);
     }
 }

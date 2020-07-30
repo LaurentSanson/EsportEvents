@@ -72,6 +72,17 @@ class Scrim
      */
     private $organizer;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=MatchStyle::class, inversedBy="scrims")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $matchStyle;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
@@ -229,6 +240,30 @@ class Scrim
     public function setOrganizer(?Player $organizer): self
     {
         $this->organizer = $organizer;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getMatchStyle(): ?MatchStyle
+    {
+        return $this->matchStyle;
+    }
+
+    public function setMatchStyle(?MatchStyle $matchStyle): self
+    {
+        $this->matchStyle = $matchStyle;
 
         return $this;
     }
