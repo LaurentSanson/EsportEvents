@@ -6,6 +6,7 @@ use App\Entity\Player;
 use App\Entity\Scrim;
 use App\Form\ScrimType;
 use Doctrine\ORM\EntityManagerInterface;
+use mysql_xdevapi\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,7 +21,7 @@ class ScrimController extends AbstractController
      */
     public function index(EntityManagerInterface $em)
     {
-        $upcomingScrims = $em->getRepository(Scrim::class)->findBy(array(), array('scrimDate' => 'DESC'), 5);
+        $upcomingScrims = $em->getRepository(Scrim::class)->findBy(array(), array('scrimDate' => 'ASC'), 5);
         return $this->render('scrim/index.html.twig', [
             'upcomingScrims' => $upcomingScrims,
         ]);
@@ -40,6 +41,7 @@ class ScrimController extends AbstractController
         $user = $this->getUser();
         $player = $em->getRepository(Player::class)->find($user);
         $team = $player->getTeam();
+        $today = new \DateTime('now');
         $addScrimForm = $this->createForm(ScrimType::class, $scrim);
         $addScrimForm->handleRequest($request);
 
@@ -60,14 +62,14 @@ class ScrimController extends AbstractController
                 $scrim->setLogo($newFilename);
             }
 
-            $today = new \DateTime('now');
+
             if ($scrim->getScrimDate() < $today) {
                 $this->addFlash('danger', 'Your Scrim can\'t be before today');
             } elseif ($scrim->getScrimlimitRegistrationDate() > $scrim->getScrimDate()) {
                 $this->addFlash('danger', 'Your Scrim limit registration date can\'t be after the scrim date');
             } elseif ($scrim->getScrimlimitRegistrationDate() < $today) {
                 $this->addFlash('danger', 'Your Scrim limit registration date can\'t be before today');
-            }else {
+            } else {
                 $scrim->setNbMaxTeams(2);
                 $scrim->setOrganizer($player);
                 $scrim->addPlayer($player);
@@ -79,7 +81,8 @@ class ScrimController extends AbstractController
             }
         }
         return $this->render('scrim/addScrim.html.twig', [
-            'addScrimForm' => $addScrimForm->createView()
+            'addScrimForm' => $addScrimForm->createView(),
+
         ]);
     }
 
@@ -95,10 +98,12 @@ class ScrimController extends AbstractController
         }
         $scrim = $em->getRepository(Scrim::class)->find($id);
         $teams = $scrim->getTeams();
+        $today = new \DateTime('now');
 
         return $this->render('scrim/scrimDetail.html.twig', [
             'scrim' => $scrim,
             'teams' => $teams,
+            'today' => $today
         ]);
     }
 
@@ -126,10 +131,10 @@ class ScrimController extends AbstractController
         } elseif (in_array($team, $teams)) {
             $this->addFlash('danger', "You are already registered for this Scrim");
             return $this->redirectToRoute('scrimDetail', ['id' => $id]);
-        } elseif($scrim->getScrimlimitRegistrationDate() < $today ) {
+        } elseif ($scrim->getScrimlimitRegistrationDate() < $today) {
             $this->addFlash('danger', "The registrations are closed");
             return $this->redirectToRoute('scrimDetail', ['id' => $id]);
-        } else{
+        } else {
             $scrim->addTeam($team);
             $entityManager->flush();
         }
@@ -145,7 +150,7 @@ class ScrimController extends AbstractController
      */
     public function scrimUnregister($id, EntityManagerInterface $em)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You can't access to this page if you're not connected !");
             return $this->redirectToRoute('main');
         }
@@ -154,11 +159,11 @@ class ScrimController extends AbstractController
         $userTeam = $user->getTeam();
         $userTeamPlayers = $scrim->getPlayers();
         $today = new \DateTime('now');
-        if ($scrim->getScrimlimitRegistrationDate() < $today){
+        if ($scrim->getScrimlimitRegistrationDate() < $today) {
             $this->addFlash('danger', "You cannot be unregistered from this Scrim as the registration/unregistration are closed.");
             return $this->redirectToRoute('scrimDetail', ['id' => $id]);
-        } else{
-            foreach ($userTeamPlayers as $player){
+        } else {
+            foreach ($userTeamPlayers as $player) {
                 $scrim->removePlayer($player);
             }
             $scrim->removeTeam($userTeam);
@@ -178,10 +183,11 @@ class ScrimController extends AbstractController
      */
     public function scrimUpdate($id, EntityManagerInterface $em, Request $request)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You can't access to this page if you're not connected");
             return $this->redirectToRoute('main');
         }
+
         $scrim = $em->getRepository(Scrim::class)->find($id);
         $form = $this->createForm(ScrimType::class, $scrim);
         $form->handleRequest($request);
@@ -208,7 +214,7 @@ class ScrimController extends AbstractController
      */
     public function scrimDelete(EntityManagerInterface $em, $id)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You can't access to this page if you're not connected !");
             return $this->redirectToRoute('main');
         }
@@ -234,7 +240,7 @@ class ScrimController extends AbstractController
      */
     public function scrimResults(EntityManagerInterface $em, Request $request, $id)
     {
-        if (!$this->getUser()){
+        if (!$this->getUser()) {
             $this->addFlash('danger', "You can't access to this page if you're not connected !");
             return $this->redirectToRoute('main');
         }

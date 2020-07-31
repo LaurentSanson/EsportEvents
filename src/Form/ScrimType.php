@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\MatchStyle;
 use App\Entity\Platform;
 use App\Entity\Scrim;
 use App\Form\DataTransformer\GameToStringTransformer;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -50,7 +52,14 @@ class ScrimType extends AbstractType
                     return $entity ? $entity->getName() : '';
                 },
             ])
-            ->add('game', SearchType::class);
+            ->add('game', SearchType::class)
+            ->add('matchStyle', EntityType::class, [
+                'class' => MatchStyle::class,
+                'choice_label' => 'name',
+                'choice_value' => function (?MatchStyle $entity) {
+                    return $entity ? $entity->getName() : '';
+                },
+            ]);
 
         $builder->get('game')
             ->addModelTransformer($this->transformer);

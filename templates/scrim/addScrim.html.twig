@@ -10,6 +10,11 @@
     <h3>Add your Scrim</h3>
     <div class="container">
         {{ form_start(addScrimForm, {'attr': {'autocomplete': 'off'}}) }}
+        {% if not addScrimForm.vars.valid %}
+            <div class="alert alert-error">
+                {{ form_errors(addScrimForm) }}
+            </div>
+        {% endif %}
         {{ form_row(addScrimForm.name) }}
         {{ form_row(addScrimForm.logo) }}
         {{ form_row(addScrimForm.scrimDate) }}
@@ -18,7 +23,8 @@
             {{ form_row(addScrimForm.game, {'id':'myInput'}) }}
         </div>
         {{ form_row(addScrimForm.platform) }}
-        {{ form_row(addScrimForm.description, {'id':'myTextarea', 'full_name': 'myTextarea'}) }}
+        {{ form_row(addScrimForm.matchStyle) }}
+        {{ form_row(addScrimForm.description) }}
         <button type="submit" class="btn btn-secondary">Create your Scrim</button>
         {{ form_end(addScrimForm) }}
     </div>
@@ -32,7 +38,7 @@
     </script>
     <script>
         tinymce.init({
-            selector: '#myTextarea',
+            selector: '#scrim_description',
             plugins: [
                 "a11ychecker advcode advlist anchor autolink codesample fullscreen help image imagetools tinydrive",
                 " lists link media noneditable powerpaste preview",

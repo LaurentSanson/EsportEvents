@@ -5,9 +5,14 @@
 
 {% block body %}
 
-    <h3>Add your Scrim</h3>
+    <h3>Update your Scrim</h3>
     <div class="container">
         {{ form_start(scrimForm, {'attr': {'autocomplete': 'off'}}) }}
+        {% if not scrimForm.vars.valid %}
+            <div class="alert alert-error">
+                {{ form_errors(scrimForm) }}
+            </div>
+        {% endif %}
         {{ form_row(scrimForm.name) }}
         {{ form_row(scrimForm.logo) }}
         {{ form_row(scrimForm.scrimDate) }}
@@ -16,6 +21,8 @@
             {{ form_row(scrimForm.game, {'id':'myInput'}) }}
         </div>
         {{ form_row(scrimForm.platform) }}
+        {{ form_row(scrimForm.matchStyle) }}
+        {{ form_row(scrimForm.description |raw) }}
         {{ form_row(scrimForm._token) }}
         <button type="submit" class="btn btn-secondary">Update your Scrim</button>
         {{ form_end(scrimForm, {'render_rest': false}) }}
@@ -30,5 +37,19 @@
     <script type="text/javascript">
         const input = document.getElementById('myInput')
         input.addEventListener("input", searchGame)
+    </script>
+    <script>
+        tinymce.init({
+            selector: '#scrim_description',
+            plugins: [
+                "a11ychecker advcode advlist anchor autolink codesample fullscreen help image imagetools tinydrive",
+                " lists link media noneditable powerpaste preview",
+                " searchreplace table template tinymcespellchecker visualblocks"
+            ],
+            toolbar: "insertfile a11ycheck undo redo | bold italic | forecolor backcolor | template codesample | alignleft aligncenter alignright alignjustify | bullist numlist | link image tinydrive",
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            branding: false
+        });
     </script>
 {% endblock %}
